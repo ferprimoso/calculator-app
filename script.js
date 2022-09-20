@@ -44,11 +44,9 @@ let secondNum = null;
 let operator = null;
 let newNumber = false; 
 
-
+const displayNum = document.querySelector('.result');
 const btnPressed = document.querySelectorAll('.btn');
 btnPressed.forEach(btn => btn.addEventListener('click', populateDisplay));
-
-const displayNum = document.querySelector('.result');
 
 function getDisplayNumber() {
     return displayNum.textContent;
@@ -60,7 +58,6 @@ function writeDisplayNumber(string, checkNewNumber) {
     } else {
         displayNum.textContent += string;
     }
-
     if (displayNum.textContent.length > 9) {
         displayNum.textContent = displayNum.textContent.slice(0, 9);
     } 
@@ -79,7 +76,6 @@ function populateDisplay(e) {
             writeDisplayNumber(char);
         }
     } else { // other pressed
-
         if (char === 'C'){
             writeDisplayNumber('0', true);
             firstNum = null;
@@ -97,7 +93,6 @@ function populateDisplay(e) {
             writeDisplayNumber(char);
         }
         else if (firstNum == null) {
-            
             firstNum = getDisplayNumber();
             operator = char;
             newNumber = true;
