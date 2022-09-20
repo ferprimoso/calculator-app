@@ -48,47 +48,63 @@ let newNumber = false;
 const btnPressed = document.querySelectorAll('.btn');
 btnPressed.forEach(btn => btn.addEventListener('click', populateDisplay));
 
+const displayNum = document.querySelector('.result');
+
+function getDisplayNumber() {
+    return displayNum.textContent;
+}
+
+function writeDisplayNumber(string, checkNewNumber) {
+    if (checkNewNumber === true ) {
+        displayNum.textContent = string;
+    } else {
+        displayNum.textContent += string;
+    }
+
+    if (displayNum.textContent.length > 9) {
+        displayNum.textContent = displayNum.textContent.slice(0, 9);
+    } 
+}
+
+
 function populateDisplay(e) {
-    const displayNum = document.querySelector('.result');
     const char = e.srcElement.outerText;
 
     // number pressed
     if (!isNaN(parseInt(char))){
-        if (displayNum.textContent === '0' || isNaN(displayNum.textContent)|| newNumber === true) {
-            displayNum.textContent = e.srcElement.outerText;
+        if (getDisplayNumber() === '0' || isNaN(getDisplayNumber())|| newNumber === true) {
+            writeDisplayNumber(char, true);
             newNumber = false;
         } else {
-            displayNum.textContent += e.srcElement.outerText;
+            writeDisplayNumber(char);
         }
     } else { // other pressed
 
         if (char === 'C'){
-            displayNum.textContent = '0';
+            writeDisplayNumber('0', true);
             firstNum = null;
             secondNum = null;
             operator = null;
             return;
         }
         else if  (char === '+/-') {
-            displayNum.textContent = displayNum.textContent * -1;
-        }
-        else if  (char === '.') {
-            displayNum.textContent += '.';
+            writeDisplayNumber(getDisplayNumber() * -1, true);
         }
         else if (char === 'del') {
-            displayNum.textContent = displayNum.textContent.slice(0, -1);
+            writeDisplayNumber(getDisplayNumber().slice(0, -1), true);
         }
-
+        else if (char === '.') {
+            writeDisplayNumber(char);
+        }
         else if (firstNum == null) {
             
-            firstNum = displayNum.textContent;
+            firstNum = getDisplayNumber();
             operator = char;
             newNumber = true;
         } else {
-
-            secondNum = displayNum.textContent;
-            displayNum.textContent = operate(firstNum, secondNum, operator);
-            firstNum = displayNum.textContent;
+            secondNum = getDisplayNumber();
+            writeDisplayNumber(operate(firstNum, secondNum, operator), true);
+            firstNum = getDisplayNumber();
             secondNum = null;
             newNumber = true;
             operator = char;
@@ -98,5 +114,5 @@ function populateDisplay(e) {
         }
     } 
 
-    if (displayNum.textContent === 'Infinity') displayNum.textContent = 'hehe xd';
+    if (getDisplayNumber() === 'Infinity') writeDisplayNumber('hehe xd', true);
 }
