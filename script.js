@@ -15,7 +15,7 @@ function divide(a, b) {
 }
 
 function operate(a, b, operator) {
-    a = parseInt(a), b = parseInt(b);
+    a = parseFloat(a), b = parseFloat(b);
     switch (operator) {
         case '+':
             return add(a, b); 
@@ -29,7 +29,9 @@ function operate(a, b, operator) {
         case '÷':
             return divide(a, b); ;       
             break;
-
+        case '=':
+            return a;
+            break;
         default:
             break;
     }
@@ -37,57 +39,64 @@ function operate(a, b, operator) {
 
 // DOM
 
-// Get number pressed 
-
-const displayNum = document.querySelector('.result');
-const btnPressed = document.querySelectorAll('.btn');
-btnPressed.forEach(btn => btn.addEventListener('click', populateDisplay));
-
 let firstNum = null;
 let secondNum = null;
 let operator = null;
-let newOperation = false; 
+let newNumber = false; 
+
+
+const btnPressed = document.querySelectorAll('.btn');
+btnPressed.forEach(btn => btn.addEventListener('click', populateDisplay));
 
 function populateDisplay(e) {
+    const displayNum = document.querySelector('.result');
     const char = e.srcElement.outerText;
 
+    // number pressed
     if (!isNaN(parseInt(char))){
-        if (displayNum.textContent === '0' || isNaN(displayNum.textContent)|| newOperation === true) {
+        if (displayNum.textContent === '0' || isNaN(displayNum.textContent)|| newNumber === true) {
             displayNum.textContent = e.srcElement.outerText;
-            newOperation = false;
+            newNumber = false;
         } else {
             displayNum.textContent += e.srcElement.outerText;
         }
-
-    } else {
-        if (displayNum.textContent === '') return;
+    } else { // other pressed
 
         if (char === 'C'){
-            displayNum.textContent = '';
+            displayNum.textContent = '0';
             firstNum = null;
+            secondNum = null;
+            operator = null;
             return;
         }
-        else if (char === '='){
-           if(firstNum == null) return;
-
-           secondNum = displayNum.textContent;
-           console.log(firstNum, secondNum, operator);
-           displayNum.textContent = operate(firstNum, secondNum, operator);
-           firstNum = displayNum.textContent;
-           secondNum = null;
+        else if  (char === '+/-') {
+            displayNum.textContent = displayNum.textContent * -1;
         }
-        else if (newOperation == false ) {
+        else if  (char === '.') {
+            displayNum.textContent += '.';
+        }
+        else if (char === 'del') {
+            displayNum.textContent = displayNum.textContent.slice(0, -1);
+        }
+
+        else if (firstNum == null) {
+            
             firstNum = displayNum.textContent;
             operator = char;
-            displayNum.textContent = char;
-            console.log(operator)
+            newNumber = true;
         } else {
+
             secondNum = displayNum.textContent;
-            console.log(firstNum, secondNum, operator);
             displayNum.textContent = operate(firstNum, secondNum, operator);
             firstNum = displayNum.textContent;
-            newOperation = true;
+            secondNum = null;
+            newNumber = true;
+            operator = char;
+            if(operator === '=') {
+                firstNum = null;
+            } 
         }
-    }
-};
+    } 
 
+    if (displayNum.textContent === 'Infinity') displayNum.textContent = 'hehe xd';
+}
